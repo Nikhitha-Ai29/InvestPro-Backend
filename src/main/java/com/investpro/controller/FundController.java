@@ -10,7 +10,7 @@ import com.investpro.service.FundService;
 
 @RestController
 @RequestMapping("/funds")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class FundController {
 
     @Autowired

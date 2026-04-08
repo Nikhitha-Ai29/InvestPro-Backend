@@ -10,7 +10,7 @@ import com.investpro.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
     @Autowired

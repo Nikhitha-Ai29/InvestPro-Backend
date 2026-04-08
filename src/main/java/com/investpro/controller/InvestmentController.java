@@ -11,7 +11,7 @@ import com.investpro.service.InvestmentService;
 
 @RestController
 @RequestMapping("/investments")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class InvestmentController {
 
     @Autowired
