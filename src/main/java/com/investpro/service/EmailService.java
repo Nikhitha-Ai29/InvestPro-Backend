@@ -1,3 +1,5 @@
+package com.investpro.service;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +25,10 @@ public class EmailService {
             conn.setDoOutput(true);
 
             String json = "{"
-                    + "\"sender\":{\"email\":\"venuthurlanikhithareddy@gmail.com\"},"
+                    + "\"sender\":{\"email\":\"venuthurlanikhithareddy@gmail.com\",\"name\":\"InvestPro\"},"
                     + "\"to\":[{\"email\":\"" + to + "\"}],"
                     + "\"subject\":\"" + subject + "\","
-                    + "\"htmlContent\":\"<p>" + body + "</p>\""
+                    + "\"htmlContent\":\"<p>" + body.replace("\n", "<br>") + "</p>\""
                     + "}";
 
             try (OutputStream os = conn.getOutputStream()) {
@@ -34,10 +36,13 @@ public class EmailService {
             }
 
             int responseCode = conn.getResponseCode();
-            System.out.println("Email API response: " + responseCode);
+
+            if (responseCode < 200 || responseCode >= 300) {
+                throw new RuntimeException("Brevo email failed. Response code: " + responseCode);
+            }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Email sending failed: " + e.getMessage());
         }
     }
 }
