@@ -8,7 +8,6 @@ import com.investpro.service.ChatService;
 
 @RestController
 @RequestMapping("/chat")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ChatController {
 
     @Autowired
