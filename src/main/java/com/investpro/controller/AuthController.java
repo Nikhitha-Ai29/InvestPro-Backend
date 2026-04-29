@@ -16,6 +16,8 @@ import com.investpro.service.AuthService;
     "http://localhost:5174",
     "http://localhost:5175",
     "http://localhost:5176"
+    "https://invest-pro-frontend-rho.vercel.app"
+
 })
 public class AuthController {
 
