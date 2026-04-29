@@ -58,24 +58,24 @@ public class AuthService {
     }
 
     public void sendOtp(String email) {
-        // Check if user exists
         if (!userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("User not found");
         }
 
-        // Generate 6-digit OTP
         String otp = String.format("%06d", new Random().nextInt(999999));
-        
-        // Store OTP and timestamp
+
         otpStore.put(email, otp);
         otpTimestamps.put(email, System.currentTimeMillis());
-        
-        // Send email
+
+        System.out.println("Generated OTP for " + email + " : " + otp);
+
         String subject = "InvestPro - OTP Verification";
         String body = "Your OTP is: " + otp + "\n\nThis OTP is valid for 10 minutes.\nDo not share this with anyone.";
-        emailService.sendEmail(email, subject, body);
-    }
 
+        emailService.sendEmail(email, subject, body);
+
+        System.out.println("OTP email sent successfully to " + email);
+    }
     public User verifyOtp(String email, String otp) {
         // Check if OTP exists
         if (!otpStore.containsKey(email)) {
