@@ -9,6 +9,7 @@ import com.investpro.dto.InvestmentRequest;
 import com.investpro.entity.Investment;
 import com.investpro.service.InvestmentService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/investments")
 public class InvestmentController {
@@ -24,5 +25,11 @@ public class InvestmentController {
     @GetMapping("/user/{userId}")
     public List<Investment> getUserInvestments(@PathVariable Long userId) {
         return investmentService.getInvestmentsByUser(userId);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteInvestment(@PathVariable Long id) {
+        investmentService.deleteInvestment(id);
+        return "Investment deleted successfully";
     }
 }
