@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.investpro.entity.User;
 import com.investpro.service.UserService;
 
+@CrossOrigin(origins = "*")  
 @RestController
 @RequestMapping("/users")
 public class UserController {
