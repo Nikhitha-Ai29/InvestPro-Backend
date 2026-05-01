@@ -18,17 +18,13 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
-    
-    @Autowired
-    private EmailService emailService;
-    
-    // Store OTPs in memory (in production, use Redis or database)
+
+    // Store OTPs in memory
     private Map<String, String> otpStore = new HashMap<>();
     private Map<String, Long> otpTimestamps = new HashMap<>();
     private static final long OTP_VALIDITY_MINUTES = 10;
 
     public User register(RegisterRequest request) {
-        // Check if user already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("User with this email already exists");
         }
@@ -48,12 +44,13 @@ public class AuthService {
         if (!userOpt.isPresent()) {
             throw new RuntimeException("User not found");
         }
-        
+
         User user = userOpt.get();
+
         if (!user.getPassword().equals(request.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        
+
         return user;
     }
 
@@ -67,48 +64,41 @@ public class AuthService {
         otpStore.put(email, otp);
         otpTimestamps.put(email, System.currentTimeMillis());
 
-        System.out.println("Generated OTP for " + email + " : " + otp);
-
-        String subject = "InvestPro - OTP Verification";
-        String body = "Your OTP is: " + otp + "\n\nThis OTP is valid for 10 minutes.\nDo not share this with anyone.";
-
-        emailService.sendEmail(email, subject, body);
-
-        System.out.println("OTP email sent successfully to " + email);
+        System.out.println("=================================");
+        System.out.println("OTP for " + email + " is: " + otp);
+        System.out.println("=================================");
     }
+
     public User verifyOtp(String email, String otp) {
-        // Check if OTP exists
         if (!otpStore.containsKey(email)) {
             throw new RuntimeException("OTP not sent to this email");
         }
 
-        // Check if OTP has expired
         long currentTime = System.currentTimeMillis();
         long otpTime = otpTimestamps.getOrDefault(email, 0L);
         long diffMinutes = (currentTime - otpTime) / (60 * 1000);
-        
+
         if (diffMinutes > OTP_VALIDITY_MINUTES) {
             otpStore.remove(email);
             otpTimestamps.remove(email);
             throw new RuntimeException("OTP has expired");
         }
 
-        // Verify OTP
         String storedOtp = otpStore.get(email);
+
         if (!storedOtp.equals(otp)) {
             throw new RuntimeException("Invalid OTP");
         }
 
-        // OTP verified, remove it
         otpStore.remove(email);
         otpTimestamps.remove(email);
 
-        // Return the user
         Optional<User> userOpt = userRepository.findByEmail(email);
+
         if (!userOpt.isPresent()) {
             throw new RuntimeException("User not found");
         }
-        
+
         return userOpt.get();
     }
 
